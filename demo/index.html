@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skimore Drammen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{ --navy:#1f2a44; --ink:#22252b; --muted:#6b7280; --line:#e5e7eb; --bg:#ffffff; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:"Inter",system-ui,sans-serif; color:var(--ink); background:var(--bg);
+      line-height:1.6; -webkit-font-smoothing:antialiased;
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+    header{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:20}
+    header .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:16px;padding-bottom:16px}
+    header img{height:26px;display:block}
+    nav{display:flex;gap:24px;font-size:14px;color:var(--muted)}
+    nav a:hover{color:var(--navy)}
+    @media(max-width:640px){nav{display:none}}
+
+    .hero{position:relative;height:min(56vh,440px);display:flex;align-items:flex-end;
+      background:var(--navy) center/cover no-repeat;}
+    .hero::after{content:"";position:absolute;inset:0;
+      background:linear-gradient(180deg,rgba(31,42,68,.15),rgba(31,42,68,.82))}
+    .hero .wrap{position:relative;z-index:1;padding-bottom:38px;color:#fff;width:100%}
+    .hero .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;opacity:.85}
+    .hero h1{font-size:clamp(30px,5.5vw,50px);font-weight:700;line-height:1.1;margin-top:8px}
+
+    section{padding:56px 0}
+    h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+      font-weight:600;margin-bottom:22px}
+
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+    .card{border:1px solid var(--line);border-radius:10px;padding:24px}
+    .card .tier{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .card .price{font-size:30px;font-weight:700;color:var(--navy);margin-top:10px}
+    .card .price span{font-size:14px;font-weight:500;color:var(--muted)}
+    .card .note{font-size:13.5px;color:var(--muted);margin-top:8px}
+
+    .split{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;
+      border-top:1px solid var(--line);padding-top:32px}
+    .split div b{display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+      color:var(--navy);margin-bottom:6px}
+    .split div{font-size:14px;color:var(--muted)}
+
+    .hint{background:#f6f7f9;border:1px solid var(--line);border-radius:10px;
+      padding:22px 24px;font-size:15px;color:var(--muted)}
+    .hint b{color:var(--ink)}
+    .tag{margin-top:18px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9ca3af}
+
+    footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <a href="#"><img src="assets/skimore-logo.png" alt="Skimore"></a>
+      <nav>
+        <a href="#medlemskap">Medlemskap</a>
+        <a href="#priser">Priser</a>
+        <a href="#apent">Åpningstider</a>
+        <a href="#kontakt">Kontakt</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="hero" style="background-image:url('assets/hero.jpg')">
+    <div class="wrap">
+      <div class="kicker">Drammen</div>
+      <h1>Bikepark om sommeren.<br>Alpint om vinteren.</h1>
+    </div>
+  </div>
+
+  <section id="priser">
+    <div class="wrap">
+      <h2 id="medlemskap">Medlemskap — gjelder alle tre anlegg</h2>
+      <div class="cards">
+        <div class="card">
+          <div class="tier">Knøtt · 0–6 år</div>
+          <div class="price">119,-<span> /mnd</span></div>
+          <div class="note">1 428,- per år</div>
+        </div>
+        <div class="card">
+          <div class="tier">7 år + · 7–79 år</div>
+          <div class="price">289,-<span> /mnd</span></div>
+          <div class="note">3 468,- per år</div>
+        </div>
+        <div class="card">
+          <div class="tier">Familie</div>
+          <div class="price">799,-<span> /mnd</span></div>
+          <div class="note">Inntil 2 voksne og 3 barn</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="split">
+        <div id="apent">
+          <b>Åpent i sommer</b>
+          Onsdag 12–19, torsdag–søndag 10–16.<br>Mandag og tirsdag stengt.
+        </div>
+        <div>
+          <b>Uten medlemskap</b>
+          Gjestepass 450,- · Enkelttur 100,-<br>Sykkelutleie fra 790,-
+        </div>
+        <div id="kontakt">
+          <b>Kontakt</b>
+          support@skimore.no<br>+47 22 14 36 10
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <p class="hint">
+        Spør chatten nede til høyre om det en kunde ville spurt om — f.eks.
+        <b>«Når har dere åpent?»</b>, <b>«Hva koster familiemedlemskap?»</b> eller
+        <b>«Kan jeg si opp medlemskapet mitt?»</b> Den svarer med én gang, på norsk
+        eller engelsk, og sender kunden videre til support@skimore.no når et
+        menneske trengs. Prøv gjerne å lure den.
+      </p>
+      <div class="tag">Live demo · Dietrichs Marketing</div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">© Skimore AS · Drammen Skisenter AS · support@skimore.no</div>
+  </footer>
+
+  <!-- DM chat-widget — samme origin som denne siden (serveres av backend) -->
+  <script async src="https://dm-b2j3i22sna-lz.a.run.app/widget/voltio-widget.js"
+          data-tenant-key="voltio_OJ1B13i6YTb4cfLtfp3ZTTHyzzwudq0I"
+          data-color="#1f2a44"
+          data-title="Skimore Drammen"
+          data-subtitle="Vi hjelper deg gjerne"
+          data-language="no"
+          data-fresh="1"
+          data-suggestions="Når har dere åpent?|Hva koster familiemedlemskap?|Trenger jeg medlemskap for én dag?|Kan jeg si opp medlemskapet mitt?"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skimore Drammen — live demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{ --navy:#1f2a44; --ink:#22252b; --muted:#6b7280; --line:#e5e7eb; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:"Inter",system-ui,sans-serif; color:var(--ink); background:#f6f7f9;
+      line-height:1.6; min-height:100vh; display:flex; align-items:center;
+      justify-content:center; padding:24px; -webkit-font-smoothing:antialiased;
+    }
+    .card{
+      background:#fff; border:1px solid var(--line); border-radius:12px;
+      max-width:430px; width:100%; padding:40px 36px; text-align:center;
+    }
+    .card img{height:28px;margin-bottom:22px}
+    .kicker{
+      font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+      color:#9ca3af; margin-bottom:14px;
+    }
+    h1{font-size:26px;font-weight:700;line-height:1.2;color:var(--navy)}
+    .sub{font-size:15px;color:var(--muted);margin-top:8px;margin-bottom:24px}
+    .note{
+      text-align:left; font-size:13.5px; color:var(--muted); background:#f6f7f9;
+      border:1px solid var(--line); border-radius:8px; padding:14px 16px; margin-bottom:24px;
+    }
+    .note b{color:var(--ink)}
+    button{
+      font-family:inherit; font-size:15px; font-weight:600; cursor:pointer;
+      background:var(--navy); color:#fff; border:none; border-radius:8px;
+      padding:15px 28px; width:100%; transition:opacity .15s, transform .15s;
+    }
+    button:hover{opacity:.92}
+    button:active{transform:scale(.98)}
+    button:disabled{opacity:.7;cursor:default}
+    .foot{margin-top:22px;font-size:11px;color:#9ca3af}
+
+    .overlay{
+      position:fixed; inset:0; z-index:50; display:none;
+      align-items:center; justify-content:center; padding:24px;
+      background:rgba(31,42,68,.45); backdrop-filter:blur(3px);
+    }
+    .overlay.show{display:flex}
+    .modal{
+      background:#fff; border-radius:12px; max-width:340px; width:100%;
+      padding:38px 32px 32px; text-align:center;
+      box-shadow:0 24px 60px -18px rgba(0,0,0,.35);
+      animation:pop .25s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+    .ring{
+      position:relative; width:110px; height:110px; margin:0 auto 20px; border-radius:50%;
+      background:conic-gradient(var(--navy) var(--deg,0deg), var(--line) 0deg);
+      transition:background .5s linear;
+    }
+    .ring::after{content:"";position:absolute;inset:9px;border-radius:50%;background:#fff}
+    .ring .num{position:absolute;inset:0;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;z-index:1}
+    .ring .num b{font-size:34px;font-weight:700;line-height:1;color:var(--navy)}
+    .ring .num span{font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--muted);margin-top:4px}
+    .ring .check{display:none}
+    .ring.done{background:var(--navy)}
+    .ring.done .check{position:absolute;inset:0;display:flex;align-items:center;
+      justify-content:center;z-index:1;color:#fff}
+    .ring.done .check svg{width:42px;height:42px}
+    .m-title{font-size:16px;font-weight:600;margin-bottom:6px}
+    .m-status{font-size:13.5px;color:var(--muted);min-height:20px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="demo/assets/skimore-logo.png" alt="Skimore">
+    <div class="kicker">Dietrichs Marketing · live demo</div>
+    <h1>Skimore Drammen</h1>
+    <p class="sub">AI-kundeservice trent på deres eget anlegg.</p>
+
+    <div class="note">
+      Dette er en <b>live demo</b>. For å holde kostnaden nede <b>sover den når
+      den ikke er i bruk</b> og våkner på forespørsel — første start tar derfor
+      omtrent <b>15–20 sekunder</b>. Etter det svarer den umiddelbart.
+    </div>
+
+    <button id="startBtn">Start demoen</button>
+
+    <div class="foot">Levert av Dietrichs Marketing</div>
+  </div>
+
+  <div class="overlay" id="overlay" role="dialog" aria-live="polite" aria-label="Starter demoen">
+    <div class="modal">
+      <div class="ring" id="ring">
+        <div class="num" id="num"><b id="count">20</b><span>sekunder</span></div>
+        <div class="check" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+      </div>
+      <div class="m-title" id="mTitle">Varmer opp demo-serveren</div>
+      <div class="m-status" id="mStatus">Vekker AI-en fra dvale…</div>
+    </div>
+  </div>
+
+  <script>
+    // Chat-hjernen (widget-iframe + API) kjører på Cloud Run (scale-to-zero).
+    // Selve demo-siden ligger her på GitHub Pages under ./demo/.
+    var CHAT_ORIGIN = "https://dm-b2j3i22sna-lz.a.run.app";
+    var DEMO_URL = "./demo/";
+    var EST = 20;          // forventet kaldstart (sek) — kun for nedtellingen
+    var MAX_WAIT = 30000;  // hard sikkerhetsnett (ms)
+
+    var btn = document.getElementById("startBtn");
+    var overlay = document.getElementById("overlay");
+    var ring = document.getElementById("ring");
+    var count = document.getElementById("count");
+    var mStatus = document.getElementById("mStatus");
+    var mTitle = document.getElementById("mTitle");
+
+    btn.addEventListener("click", function () {
+      btn.disabled = true;
+      btn.textContent = "Starter…";
+      overlay.classList.add("show");
+
+      var t0 = Date.now();
+      var done = false;
+      var ready = false;
+
+      function go() { if (!done) { done = true; window.location.href = DEMO_URL; } }
+
+      var tick = setInterval(function () {
+        if (ready) return;
+        var elapsed = (Date.now() - t0) / 1000;
+        var frac = Math.min(elapsed / EST, 0.97);
+        ring.style.setProperty("--deg", (frac * 360) + "deg");
+        count.textContent = Math.max(EST - Math.floor(elapsed), 1);
+        if (elapsed >= EST) {
+          mStatus.textContent = "Nesten klar — hold ut…";
+        } else if (elapsed > EST * 0.5) {
+          mStatus.textContent = "Laster kunnskapsbasen…";
+        }
+      }, 100);
+
+      function finish() {
+        if (ready) return;
+        ready = true;
+        clearInterval(tick);
+        ring.style.setProperty("--deg", "360deg");
+        ring.classList.add("done");
+        mTitle.textContent = "Klar";
+        mStatus.textContent = "Åpner demoen…";
+        setTimeout(go, 650);
+      }
+
+      // Varm opp Cloud Run. no-cors: vi trenger ikke lese svaret, bare vite at
+      // serveren har svart (da er init_app ferdig og demoen er varm).
+      fetch(CHAT_ORIGIN + "/health", { mode: "no-cors", cache: "no-store" })
+        .then(finish)
+        .catch(finish);
+
+      setTimeout(finish, MAX_WAIT);
+    });
+  </script>
+</body>
+</html>
