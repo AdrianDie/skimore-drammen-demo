@@ -167,8 +167,11 @@
       var msg = document.getElementById("demoResetMsg");
       btn.addEventListener("click", function () {
         btn.disabled = true; msg.textContent = "Nullstiller…";
+        // Eksplisitt body: en POST uten Content-Length avvises av Cloud Run.
         fetch(API + "/api/demo/reset", {
-          method: "POST", headers: { "X-Voltio-Api-Key": KEY }
+          method: "POST",
+          headers: { "X-Voltio-Api-Key": KEY, "Content-Type": "application/json" },
+          body: "{}"
         })
         .then(function (r) { return r.json(); })
         .then(function (d) {
