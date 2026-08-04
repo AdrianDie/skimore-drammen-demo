@@ -145,5 +145,48 @@
           data-language="no"
           data-fresh="1"
           data-suggestions="Når har dere åpent?|Hva koster familiemedlemskap?|Trenger jeg medlemskap for én dag?|Kan jeg si opp medlemskapet mitt?"></script>
+
+  <!-- Demo-kontroll. Selvbetjeningsflyten er engangs: når husstanden først
+       står på Familie, finnes det ingenting å bytte til. Denne knappen lar
+       den som viser demoen stille den tilbake selv, uten å måtte spørre oss.
+       Endepunktet virker KUN mot demo-tenanten. -->
+  <div id="demoReset" style="position:fixed;left:14px;bottom:14px;z-index:9998;
+       font:13px/1.3 system-ui,sans-serif;">
+    <button id="demoResetBtn" style="background:#fff;color:#1f2a44;
+        border:1px solid #c9cfda;border-radius:16px;padding:7px 13px;
+        cursor:pointer;font:inherit;box-shadow:0 1px 4px rgba(0,0,0,.10)">
+      ↻ Nullstill demo
+    </button>
+    <span id="demoResetMsg" style="margin-left:8px;color:#5b6577"></span>
+  </div>
+  <script>
+    (function () {
+      var API = "https://dm-b2j3i22sna-lz.a.run.app";
+      var KEY = "voltio_OJ1B13i6YTb4cfLtfp3ZTTHyzzwudq0I";
+      var btn = document.getElementById("demoResetBtn");
+      var msg = document.getElementById("demoResetMsg");
+      btn.addEventListener("click", function () {
+        btn.disabled = true; msg.textContent = "Nullstiller…";
+        fetch(API + "/api/demo/reset", {
+          method: "POST", headers: { "X-Voltio-Api-Key": KEY }
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d.ok) {
+            msg.textContent = "Klar — husstanden er tilbake til 4 medlemskap.";
+            // Ny chat, så boten ikke husker den forrige endringen.
+            setTimeout(function () { location.reload(); }, 1200);
+          } else {
+            msg.textContent = "Kunne ikke nullstille.";
+            btn.disabled = false;
+          }
+        })
+        .catch(function () {
+          msg.textContent = "Kunne ikke nullstille.";
+          btn.disabled = false;
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
