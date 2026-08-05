@@ -176,7 +176,10 @@
         .then(function (r) { return r.json(); })
         .then(function (d) {
           if (d.ok) {
-            msg.textContent = "Klar — husstanden er tilbake til 4 medlemskap.";
+            // Antallet leses av svaret, ikke skrevet for haand: husstanden
+            // var 4 en gang, ble 6, og teksten ble staaende paa 4.
+            msg.textContent = "Klar — husstanden er tilbake til "
+              + d.members + " medlemskap.";
             // Ny chat, så boten ikke husker den forrige endringen.
             setTimeout(function () { location.reload(); }, 1200);
           } else {
